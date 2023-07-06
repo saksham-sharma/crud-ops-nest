@@ -13,6 +13,7 @@ import {
   NotFoundException,
   Put,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import { CatsService } from './cats.service';
@@ -30,6 +31,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { FileUploadDto } from './dto/file-upload.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 const storage = diskStorage({
   destination: './uploads',
@@ -45,6 +47,7 @@ const storage = diskStorage({
 export class CatsController {
   constructor(private catsService: CatsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiResponse({
     status: 201,
@@ -77,6 +80,7 @@ export class CatsController {
     return this.catsService.create(createCatDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/downloadAll')
   @ApiOkResponse({
     description: 'Operation Successfull.',
@@ -105,6 +109,7 @@ export class CatsController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/listAll')
   @ApiOkResponse({
     description: 'Operation Successfull.',
@@ -117,6 +122,7 @@ export class CatsController {
     return objectIds;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiOkResponse({
     description: 'The record with given ID successfully found.',
@@ -136,6 +142,7 @@ export class CatsController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -165,6 +172,7 @@ export class CatsController {
     return cat;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @HttpCode(204)
   @ApiResponse({
