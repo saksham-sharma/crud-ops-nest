@@ -2,12 +2,22 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
 import * as bcrypt from 'bcrypt';
+import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { UserDto } from './dto/user.dto';
 
+@ApiTags('auth')
 @Controller('auth')
 export class UserController {
   constructor(private readonly usersService: UserService) {}
 
   @Post('/signup')
+  @ApiOkResponse({
+    description: 'User Added Successfully!.',
+  })
+  @ApiBody({
+    description: 'Username and Password',
+    type: UserDto,
+  })
   async createUser(
     @Body('password') password: string,
     @Body('username') username: string,

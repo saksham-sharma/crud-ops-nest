@@ -59,7 +59,7 @@ export class CatsController {
     }),
   )
   @ApiBody({
-    description: 'List of cats',
+    description: 'Image of Cat',
     type: FileUploadDto,
   })
   async create(

@@ -58,4 +58,14 @@ To see Swagger docs open this [URL](https://localhost:3000/api)
 &nbsp; &nbsp; &nbsp; &nbsp; The ***Cat*** object of the new image is returned as the response. Note: The *Id* remains the same, only the path changes as per [RFC-6902](https://datatracker.ietf.org/doc/html/rfc6902#section-4.3)
 
 #### *DELTE IMAGE(DELTE)*
-&nbsp; &nbsp; &nbsp; &nbsp; The Delete Image operation is on the route of '/cats/{id}' and takes an *Id* path param, deleting the image from the DB and returning a ```204 - NO CONTENT``` status code.
+&nbsp; &nbsp; &nbsp; &nbsp; The Delete Image operation is on the route '/cats/{id}' and takes an *Id* path param, deleting the image from the DB and returning a ```204 - NO CONTENT``` status code.
+
+#### *SIGN UP(POST)*
+&nbsp; &nbsp; &nbsp; &nbsp; The Sign Up operation is on the route '/auth/signup' and takes a *username* and *password* as input, adds the new user in the data DB with a hashed password.
+
+&nbsp; &nbsp; &nbsp; &nbsp; Returns a **User** object containing the *username* and *password(hashed)* of the user.
+
+#### *LOG IN(POST)*
+&nbsp; &nbsp; &nbsp; &nbsp; The Log In operation is on the route '/auth/login' and takes *username* and *password* as input.
+
+&nbsp; &nbsp; &nbsp; &nbsp; Returning a *JSON* object with the *access_token* property to be used by the user as the **Bearer Token** for access to the '/cats' routes.
