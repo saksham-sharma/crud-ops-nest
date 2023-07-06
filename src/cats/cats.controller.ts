@@ -178,6 +178,5 @@ export class CatsController {
       throw new NotFoundException(`Cat with id: ${id} NOT FOUND!`);
     }
     unlinkSync(cat.path);
-    return cat;
   }
 }

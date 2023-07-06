@@ -166,7 +166,8 @@ describe('CatsController', () => {
       jest.spyOn(fs, 'unlinkSync').mockImplementation();
       const promise = Promise.resolve(cat);
       jest.spyOn(catsService, 'delete').mockImplementation(() => promise);
-      expect(await catsController.delete('123')).toBe(cat);
+      await catsController.delete('123');
+      expect(fs.unlinkSync).toBeCalled();
     });
     it('should throw an error if requested resource is not in DB', async () => {
       jest.spyOn(fs, 'unlinkSync').mockImplementation();
