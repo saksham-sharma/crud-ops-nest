@@ -12,6 +12,8 @@ $ npm install
 
 ## Running the app
 
+Download and start MongoDB Community Edition as a service on your system (https://www.mongodb.com/try/download/community). This is a pre-requisite to running the application and must be done before running the npm run start command.
+
 ```bash
 # development
 $ npm run start

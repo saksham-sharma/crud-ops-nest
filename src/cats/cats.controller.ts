@@ -52,6 +52,7 @@ export class CatsController {
   @ApiResponse({
     status: 201,
     description: 'The record has been successfully created.',
+    type: CreateCatDto,
   })
   @UseInterceptors(
     FileInterceptor('file', {
@@ -84,7 +85,9 @@ export class CatsController {
   @Get('/downloadAll')
   @ApiOkResponse({
     description: 'Operation Successfull.',
+    type: FileUploadDto,
   })
+  @ApiNotFoundResponse({ description: 'No records exist in DB.' })
   async downloadAll(@Res() res: Response) {
     const filePaths = await this.catsService.findAll();
     if (filePaths === null) {
@@ -113,7 +116,10 @@ export class CatsController {
   @Get('/listAll')
   @ApiOkResponse({
     description: 'Operation Successfull.',
+    type: CreateCatDto,
+    isArray: true,
   })
+  @ApiNotFoundResponse({ description: 'No records exist in DB.' })
   async findAllIds() {
     const objectIds = await this.catsService.findAllIds();
     if (objectIds === null) {
@@ -126,6 +132,7 @@ export class CatsController {
   @Get(':id')
   @ApiOkResponse({
     description: 'The record with given ID successfully found.',
+    type: CreateCatDto,
   })
   @ApiNotFoundResponse({ description: 'The record with given ID not found.' })
   async findById(@Param('id') id: string, @Res() res: Response) {
@@ -144,6 +151,12 @@ export class CatsController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
+  @ApiOkResponse({
+    description:
+      'The record with given ID successfully found and replaced by the new file.',
+    type: CreateCatDto,
+  })
+  @ApiNotFoundResponse({ description: 'The record with given ID not found.' })
   @UseInterceptors(
     FileInterceptor('file', {
       storage,
