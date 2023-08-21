@@ -13,6 +13,7 @@ import {
   NotFoundException,
   Put,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import { CatsService } from './cats.service';
@@ -30,6 +31,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 import { FileUploadDto } from './dto/file-upload.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 const storage = diskStorage({
   destination: './uploads',
@@ -45,10 +47,12 @@ const storage = diskStorage({
 export class CatsController {
   constructor(private catsService: CatsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiResponse({
     status: 201,
     description: 'The record has been successfully created.',
+    type: CreateCatDto,
   })
   @UseInterceptors(
     FileInterceptor('file', {
@@ -56,7 +60,7 @@ export class CatsController {
     }),
   )
   @ApiBody({
-    description: 'List of cats',
+    description: 'Image of Cat',
     type: FileUploadDto,
   })
   async create(
@@ -77,10 +81,13 @@ export class CatsController {
     return this.catsService.create(createCatDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/downloadAll')
   @ApiOkResponse({
     description: 'Operation Successfull.',
+    type: FileUploadDto,
   })
+  @ApiNotFoundResponse({ description: 'No records exist in DB.' })
   async downloadAll(@Res() res: Response) {
     const filePaths = await this.catsService.findAll();
     if (filePaths === null) {
@@ -105,10 +112,14 @@ export class CatsController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/listAll')
   @ApiOkResponse({
     description: 'Operation Successfull.',
+    type: CreateCatDto,
+    isArray: true,
   })
+  @ApiNotFoundResponse({ description: 'No records exist in DB.' })
   async findAllIds() {
     const objectIds = await this.catsService.findAllIds();
     if (objectIds === null) {
@@ -117,9 +128,11 @@ export class CatsController {
     return objectIds;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiOkResponse({
     description: 'The record with given ID successfully found.',
+    type: CreateCatDto,
   })
   @ApiNotFoundResponse({ description: 'The record with given ID not found.' })
   async findById(@Param('id') id: string, @Res() res: Response) {
@@ -136,7 +149,14 @@ export class CatsController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
+  @ApiOkResponse({
+    description:
+      'The record with given ID successfully found and replaced by the new file.',
+    type: CreateCatDto,
+  })
+  @ApiNotFoundResponse({ description: 'The record with given ID not found.' })
   @UseInterceptors(
     FileInterceptor('file', {
       storage,
@@ -165,6 +185,7 @@ export class CatsController {
     return cat;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @HttpCode(204)
   @ApiResponse({
@@ -178,6 +199,5 @@ export class CatsController {
       throw new NotFoundException(`Cat with id: ${id} NOT FOUND!`);
     }
     unlinkSync(cat.path);
-    return cat;
   }
 }
